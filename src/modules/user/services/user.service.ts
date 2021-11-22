@@ -133,17 +133,17 @@ export class UserService extends BaseCrudService<UserEntity> {
       throw new NotFoundException('Usuário não encontrado.');
 
     if (userToUpdate.email && userToUpdate.email !== user.email) {
-      const alreadyHasUser = await this.hasUserWithEmail(payload.email);
+      const alreadyHasUser = await this.hasUserWithEmail(userToUpdate.email);
 
       if (alreadyHasUser)
         throw new BadRequestException('Já existe um usuário cadastrado com esse e-mail.');
     }
 
     if (entityId === requestUser.id)
-      return await this.repository.save(payload);
+      return await this.repository.save(userToUpdate);
 
     if (isAdminUser(requestUser))
-      return await this.repository.save(payload);
+      return await this.repository.save(userToUpdate);
 
     throw new UnauthorizedException('Você não tem permissão para realizar essa operação.');
   }
