@@ -11,7 +11,8 @@
     "start:prod": "cross-env TZ=UTC node dist/main.js",
     "typeorm:cli": "npm run build:prod && ts-node ./node_modules/typeorm/cli -f ormconfig.js",
     "migration": "npm run typeorm:cli -- migration:run",
-    "add-migration": "npm run typeorm:cli -- migration:generate -n"
+    "add-migration": "npm run typeorm:cli -- migration:generate -n",
+    "deploy:heroku": "git push heroku master"
   },
   "engines": {
     "node": "12.x"

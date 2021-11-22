@@ -124,10 +124,20 @@ export class UserService extends BaseCrudService<UserEntity> {
     if (!requestUser.roles.includes(RolesEnum.ADMIN))
       payload.roles = 'user';
 
-    const alreadyHasUser = await this.hasUserWithEmail(payload.email);
+    const userToUpdate = new UserEntity(payload);
+    userToUpdate.id = entityId;
 
-    if (alreadyHasUser)
-      throw new BadRequestException('Já existe um usuário cadastrado com esse e-mail.');
+    const user = await this.repository.findOne({ where: { id: entityId } });
+
+    if (!user)
+      throw new NotFoundException('Usuário não encontrado.');
+
+    if (userToUpdate.email && userToUpdate.email !== user.email) {
+      const alreadyHasUser = await this.hasUserWithEmail(payload.email);
+
+      if (alreadyHasUser)
+        throw new BadRequestException('Já existe um usuário cadastrado com esse e-mail.');
+    }
 
     if (entityId === requestUser.id)
       return await this.repository.save(payload);
